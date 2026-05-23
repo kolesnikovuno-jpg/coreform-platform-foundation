@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/app-shell";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/control-center")({
   head: () => ({ meta: [{ title: "Control Center — Coreform" }] }),
@@ -8,6 +9,7 @@ export const Route = createFileRoute("/control-center")({
 
 function ControlCenterPage() {
   return (
+    <RequireAuth>
     <AppShell>
       <PageHeader
         eyebrow="Operations"
@@ -22,6 +24,7 @@ function ControlCenterPage() {
         <Panel title="System health" status="Standby" />
       </div>
     </AppShell>
+    </RequireAuth>
   );
 }
 

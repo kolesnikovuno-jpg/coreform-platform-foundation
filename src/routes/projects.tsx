@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, EmptyState, PageHeader } from "@/components/app-shell";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({ meta: [{ title: "Projects — Coreform" }] }),
@@ -8,6 +9,7 @@ export const Route = createFileRoute("/projects")({
 
 function ProjectsPage() {
   return (
+    <RequireAuth>
     <AppShell>
       <PageHeader
         eyebrow="Workspace"
@@ -27,5 +29,6 @@ function ProjectsPage() {
         hint="Once Coreform is connected, your projects will live here."
       />
     </AppShell>
+    </RequireAuth>
   );
 }

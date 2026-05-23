@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/app-shell";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/backoffice")({
   head: () => ({ meta: [{ title: "Backoffice — Coreform" }] }),
@@ -8,6 +9,7 @@ export const Route = createFileRoute("/backoffice")({
 
 function BackofficePage() {
   return (
+    <RequireAuth>
     <AppShell>
       <PageHeader
         eyebrow="Operations"
@@ -22,6 +24,7 @@ function BackofficePage() {
         <Row label="Audit trail" value="—" last />
       </div>
     </AppShell>
+    </RequireAuth>
   );
 }
 

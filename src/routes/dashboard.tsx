@@ -33,6 +33,7 @@ function DashboardPage() {
         </div>
       </section>
     </AppShell>
+    </RequireAuth>
   );
 }
 

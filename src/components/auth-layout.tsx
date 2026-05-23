@@ -44,11 +44,19 @@ export function Field({
   type = "text",
   placeholder,
   name,
+  value,
+  onChange,
+  required,
+  autoComplete,
 }: {
   label: string;
   type?: string;
   placeholder?: string;
   name: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
+  autoComplete?: string;
 }) {
   return (
     <label className="block mb-6">
@@ -57,17 +65,30 @@ export function Field({
         type={type}
         name={name}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        required={required}
+        autoComplete={autoComplete}
         className="mt-2 w-full bg-transparent border-b border-hairline focus:border-foreground outline-none py-2 text-sm transition-colors"
       />
     </label>
   );
 }
 
-export function PrimaryButton({ children, type = "button" }: { children: ReactNode; type?: "button" | "submit" }) {
+export function PrimaryButton({
+  children,
+  type = "button",
+  disabled,
+}: {
+  children: ReactNode;
+  type?: "button" | "submit";
+  disabled?: boolean;
+}) {
   return (
     <button
       type={type}
-      className="w-full border border-foreground bg-foreground text-background px-5 py-3 text-sm tracking-wide hover:bg-transparent hover:text-foreground transition-colors"
+      disabled={disabled}
+      className="w-full border border-foreground bg-foreground text-background px-5 py-3 text-sm tracking-wide hover:bg-transparent hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {children}
     </button>

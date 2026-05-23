@@ -1,5 +1,6 @@
 import { Link, Outlet, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { useAuth } from "@/lib/auth-context";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", group: "Workspace" },
@@ -10,6 +11,7 @@ const nav = [
 
 export function AppShell({ children }: { children?: ReactNode }) {
   const { location } = useRouterState();
+  const { user, signOut } = useAuth();
   const current = nav.find((n) => location.pathname.startsWith(n.to));
 
   const groups = Array.from(new Set(nav.map((n) => n.group)));
@@ -47,10 +49,21 @@ export function AppShell({ children }: { children?: ReactNode }) {
 
         <div className="px-8 py-8 border-t border-hairline">
           <div className="label-eyebrow">Session</div>
-          <div className="mt-2 text-sm text-muted-foreground">Not signed in</div>
-          <Link to="/login" className="mt-4 inline-block text-sm underline underline-offset-4">
-            Sign in →
-          </Link>
+          <div className="mt-2 text-sm text-foreground truncate">
+            {user?.email ?? "Not signed in"}
+          </div>
+          {user ? (
+            <button
+              onClick={() => signOut()}
+              className="mt-4 text-sm underline underline-offset-4 text-muted-foreground hover:text-foreground"
+            >
+              Sign out →
+            </button>
+          ) : (
+            <Link to="/login" className="mt-4 inline-block text-sm underline underline-offset-4">
+              Sign in →
+            </Link>
+          )}
         </div>
       </aside>
 

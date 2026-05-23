@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/app-shell";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Coreform" }] }),
@@ -8,6 +9,7 @@ export const Route = createFileRoute("/dashboard")({
 
 function DashboardPage() {
   return (
+    <RequireAuth>
     <AppShell>
       <PageHeader
         eyebrow="Workspace"
@@ -31,6 +33,7 @@ function DashboardPage() {
         </div>
       </section>
     </AppShell>
+    </RequireAuth>
   );
 }
 

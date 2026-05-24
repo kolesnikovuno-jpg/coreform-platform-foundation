@@ -316,6 +316,72 @@ function ProjectContent() {
           )}
         </section>
 
+        <section className="border border-hairline p-8">
+          <div className="label-eyebrow mb-6">Signals</div>
+          <textarea
+            value={newSignal}
+            onChange={(e) => setNewSignal(e.target.value)}
+            className="w-full min-h-[100px] bg-background border border-hairline px-4 py-3 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-y"
+            placeholder="Capture a signal, observation, friction, idea, contradiction, note..."
+          />
+
+          <div className="mt-4 flex items-center gap-4">
+            <button
+              onClick={handleAddSignal}
+              disabled={addingSignal || !newSignal.trim()}
+              className="text-sm border border-foreground px-5 py-2 hover:bg-foreground hover:text-background transition-colors disabled:opacity-40"
+            >
+              {addingSignal ? "Adding…" : "Add Signal"}
+            </button>
+          </div>
+
+          {addSignalError && (
+            <div className="mt-4 border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {addSignalError}
+            </div>
+          )}
+          {deleteSignalError && (
+            <div className="mt-4 border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {deleteSignalError}
+            </div>
+          )}
+          {signalsError && (
+            <div className="mt-4 border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {signalsError}
+            </div>
+          )}
+
+          <div className="mt-8 space-y-3">
+            {signalsLoading && signals.length === 0 ? (
+              <div className="text-sm text-muted-foreground">Loading signals…</div>
+            ) : signals.length === 0 ? (
+              <div className="text-sm text-muted-foreground">No signals yet.</div>
+            ) : (
+              signals.map((s) => (
+                <div
+                  key={s.id}
+                  className="border border-hairline p-4 flex items-start justify-between gap-4"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-foreground whitespace-pre-wrap break-words">
+                      {s.content}
+                    </p>
+                    <p className="mono text-xs text-muted-foreground mt-2">
+                      {new Date(s.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleDeleteSignal(s.id)}
+                    className="text-xs text-muted-foreground hover:text-destructive transition-colors shrink-0"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+
         <section>
           <div className="label-eyebrow mb-4">Metadata</div>
           <dl className="divide-y divide-hairline border border-hairline">

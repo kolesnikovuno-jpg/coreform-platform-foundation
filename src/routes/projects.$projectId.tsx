@@ -190,7 +190,7 @@ function ProjectContent() {
             </div>
           </dl>
         </section>
-      </di>
+      </div>
     </>
   );
 }

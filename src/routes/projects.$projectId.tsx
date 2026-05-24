@@ -30,12 +30,14 @@ function ProjectPage() {
 
 function ProjectContent() {
   const { projectId } = Route.useParams();
+  const { user } = useAuth();
   const [project, setProject] = useState<Project | null>(null);
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [dirty, setDirty] = useState(false);
 
   const loadProject = useCallback(async () => {

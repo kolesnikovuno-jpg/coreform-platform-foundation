@@ -17,6 +17,10 @@ type Project = {
 };
 
 function DashboardPage() {
+  const { user } = useAuth();
+  const email = user?.email ?? "you@company.com";
+  const initial = email.charAt(0).toUpperCase();
+
   return (
     <RequireAuth>
       <AppShell>
@@ -125,11 +129,4 @@ function DashboardContent() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-background p-10">
-      <div className="label-eyebrow">{label}</div>
-      <div className="mt-4 font-display text-5xl">{value}</div>
-    </div>
-  );
-}
+

@@ -215,6 +215,38 @@ function ProjectContent() {
           )}
         </section>
 
+        <section className="border border-hairline p-8">
+          <div className="label-eyebrow mb-6">Central Request</div>
+          <textarea
+            value={centralRequest}
+            onChange={(e) => handleRequestChange(e.target.value)}
+            className="w-full min-h-[120px] bg-background border border-hairline px-4 py-3 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-y"
+            placeholder="What is the real request this project is trying to resolve?"
+          />
+
+          <div className="mt-6 flex items-center gap-4">
+            <button
+              onClick={handleSaveRequest}
+              disabled={!requestDirty || saving}
+              className="text-sm border border-foreground px-5 py-2 hover:bg-foreground hover:text-background transition-colors disabled:opacity-40"
+            >
+              {saving ? "Saving…" : "Save Central Request"}
+            </button>
+            {requestDirty && (
+              <span className="text-xs text-muted-foreground">Unsaved changes</span>
+            )}
+            {requestSaveSuccess && !requestDirty && (
+              <span className="text-xs text-foreground">Saved</span>
+            )}
+          </div>
+
+          {requestSaveError && (
+            <div className="mt-4 border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {requestSaveError}
+            </div>
+          )}
+        </section>
+
         <section>
           <div className="label-eyebrow mb-4">Metadata</div>
           <dl className="divide-y divide-hairline border border-hairline">

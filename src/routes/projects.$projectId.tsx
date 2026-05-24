@@ -497,7 +497,7 @@ function ProjectContent() {
         </section>
 
         <section className="border border-hairline p-8">
-          <div className="label-eyebrow mb-6">Threads</div>
+          <div className="label-eyebrow mb-6">Threads / Structural Tensions</div>
 
           <div className="space-y-3">
             <input

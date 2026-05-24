@@ -1,0 +1,1 @@
+ALTER TABLE public.projects ADD COLUMN central_request text;

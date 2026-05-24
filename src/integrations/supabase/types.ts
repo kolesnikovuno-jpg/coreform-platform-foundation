@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       projects: {
         Row: {
+          central_request: string | null
           created_at: string
           id: string
           title: string
@@ -23,6 +24,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          central_request?: string | null
           created_at?: string
           id?: string
           title?: string
@@ -30,6 +32,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          central_request?: string | null
           created_at?: string
           id?: string
           title?: string

@@ -66,24 +66,28 @@ function ProjectContent() {
   }, [loadProject]);
 
   const handleSave = async () => {
-    if (!project) return;
+    if (!project || !user) return;
     setSaving(true);
     setSaveError(null);
+    setSaveSuccess(false);
     const { error } = await supabase
       .from("projects")
-      .update({ title: title.trim() })
-      .eq("id", projectId);
+      .update({ title: title.trim(), updated_at: new Date().toISOString() })
+      .eq("id", projectId)
+      .eq("user_id", user.id);
     setSaving(false);
     if (error) {
       setSaveError(error.message);
       return;
     }
     setDirty(false);
+    setSaveSuccess(true);
     await loadProject();
   };
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
+    setSaveSuccess(false);
     setDirty(value.trim() !== (project?.title ?? "").trim());
   };
 

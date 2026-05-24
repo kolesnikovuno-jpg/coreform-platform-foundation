@@ -54,6 +54,66 @@ function ProjectContent() {
   const [requestSaveError, setRequestSaveError] = useState<string | null>(null);
   const [requestSaveSuccess, setRequestSaveSuccess] = useState(false);
 
+  const [signals, setSignals] = useState<Signal[]>([]);
+  const [signalsLoading, setSignalsLoading] = useState(false);
+  const [signalsError, setSignalsError] = useState<string | null>(null);
+  const [newSignal, setNewSignal] = useState("");
+  const [addingSignal, setAddingSignal] = useState(false);
+  const [addSignalError, setAddSignalError] = useState<string | null>(null);
+  const [deleteSignalError, setDeleteSignalError] = useState<string | null>(null);
+
+  const loadSignals = useCallback(async () => {
+    setSignalsLoading(true);
+    setSignalsError(null);
+    const { data, error } = await supabase
+      .from("signals")
+      .select("*")
+      .eq("project_id", projectId)
+      .order("created_at", { ascending: false });
+    if (error) {
+      setSignalsError(error.message);
+      setSignals([]);
+    } else {
+      setSignals((data ?? []) as Signal[]);
+    }
+    setSignalsLoading(false);
+  }, [projectId]);
+
+  useEffect(() => {
+    loadSignals();
+  }, [loadSignals]);
+
+  const handleAddSignal = async () => {
+    if (!user) return;
+    const content = newSignal.trim();
+    if (!content) return;
+    setAddingSignal(true);
+    setAddSignalError(null);
+    const { error } = await supabase.from("signals").insert({
+      project_id: projectId,
+      user_id: user.id,
+      content,
+      signal_type: "text",
+    });
+    setAddingSignal(false);
+    if (error) {
+      setAddSignalError(error.message);
+      return;
+    }
+    setNewSignal("");
+    await loadSignals();
+  };
+
+  const handleDeleteSignal = async (id: string) => {
+    setDeleteSignalError(null);
+    const { error } = await supabase.from("signals").delete().eq("id", id);
+    if (error) {
+      setDeleteSignalError(error.message);
+      return;
+    }
+    await loadSignals();
+  };
+
   const loadProject = useCallback(async () => {
     setLoading(true);
     setError(null);

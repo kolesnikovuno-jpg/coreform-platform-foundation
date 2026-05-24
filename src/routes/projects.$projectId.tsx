@@ -44,14 +44,16 @@ function ProjectContent() {
       .from("projects")
       .select("id, user_id, title, created_at, updated_at")
       .eq("id", projectId)
-      .single();
+      .maybeSingle();
     if (error) {
       setError(error.message);
       setProject(null);
-    } else {
+    } else if (data) {
       setProject(data);
       setTitle(data.title);
       setDirty(false);
+    } else {
+      setProject(null);
     }
     setLoading(false);
   }, [projectId]);

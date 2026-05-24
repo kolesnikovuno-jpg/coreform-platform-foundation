@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { RequireAuth } from "@/components/require-auth";
 import { useAuth } from "@/lib/auth-context";
@@ -109,11 +109,17 @@ function DashboardContent() {
         ) : (
           <ul className="divide-y divide-hairline border border-hairline">
             {projects.map((p) => (
-              <li key={p.id} className="flex items-center justify-between px-6 py-4">
-                <span className="text-sm text-foreground">{p.title}</span>
-                <span className="mono text-xs text-muted-foreground">
-                  {new Date(p.created_at).toLocaleString()}
-                </span>
+              <li key={p.id}>
+                <Link
+                  to="/projects/$projectId"
+                  params={{ projectId: p.id }}
+                  className="flex items-center justify-between px-6 py-4 hover:bg-muted transition-colors"
+                >
+                  <span className="text-sm text-foreground">{p.title}</span>
+                  <span className="mono text-xs text-muted-foreground">
+                    {new Date(p.created_at).toLocaleString()}
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>

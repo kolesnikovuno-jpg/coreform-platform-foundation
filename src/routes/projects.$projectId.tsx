@@ -28,6 +28,19 @@ type Signal = {
   created_at: string;
 };
 
+type Thread = {
+  id: string;
+  project_id: string;
+  user_id: string;
+  title: string;
+  pole_a: string | null;
+  pole_b: string | null;
+  category: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+};
+
 function ProjectPage() {
   return (
     <RequireAuth>

@@ -14,6 +14,7 @@ type Project = {
   id: string;
   user_id: string;
   title: string;
+  central_request: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -33,12 +34,16 @@ function ProjectContent() {
   const { user } = useAuth();
   const [project, setProject] = useState<Project | null>(null);
   const [title, setTitle] = useState("");
+  const [centralRequest, setCentralRequest] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [dirty, setDirty] = useState(false);
+  const [requestDirty, setRequestDirty] = useState(false);
+  const [requestSaveError, setRequestSaveError] = useState<string | null>(null);
+  const [requestSaveSuccess, setRequestSaveSuccess] = useState(false);
 
   const loadProject = useCallback(async () => {
     setLoading(true);

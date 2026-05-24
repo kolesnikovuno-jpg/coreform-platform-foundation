@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { RequireAuth } from "@/components/require-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/projects/$projectId")({
   head: () => ({ meta: [{ title: "Project — Coreform" }] }),
@@ -29,12 +30,14 @@ function ProjectPage() {
 
 function ProjectContent() {
   const { projectId } = Route.useParams();
+  const { user } = useAuth();
   const [project, setProject] = useState<Project | null>(null);
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [dirty, setDirty] = useState(false);
 
   const loadProject = useCallback(async () => {
@@ -63,24 +66,28 @@ function ProjectContent() {
   }, [loadProject]);
 
   const handleSave = async () => {
-    if (!project) return;
+    if (!project || !user) return;
     setSaving(true);
     setSaveError(null);
+    setSaveSuccess(false);
     const { error } = await supabase
       .from("projects")
-      .update({ title: title.trim() })
-      .eq("id", projectId);
+      .update({ title: title.trim(), updated_at: new Date().toISOString() })
+      .eq("id", projectId)
+      .eq("user_id", user.id);
     setSaving(false);
     if (error) {
       setSaveError(error.message);
       return;
     }
     setDirty(false);
+    setSaveSuccess(true);
     await loadProject();
   };
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
+    setSaveSuccess(false);
     setDirty(value.trim() !== (project?.title ?? "").trim());
   };
 
@@ -161,6 +168,9 @@ function ProjectContent() {
             </button>
             {dirty && (
               <span className="text-xs text-muted-foreground">Unsaved changes</span>
+            )}
+            {saveSuccess && !dirty && (
+              <span className="text-xs text-foreground">Saved</span>
             )}
           </div>
 

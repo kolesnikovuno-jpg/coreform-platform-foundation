@@ -17,8 +17,6 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ControlCenterRouteImport } from './routes/control-center'
 import { Route as BackofficeRouteImport } from './routes/backoffice'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
-import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -60,16 +58,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ProjectsRoute,
-} as any)
-const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
-  id: '/$projectId',
-  path: '/$projectId',
-  getParentRoute: () => ProjectsRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -77,11 +65,9 @@ export interface FileRoutesByFullPath {
   '/control-center': typeof ControlCenterRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/projects': typeof ProjectsRouteWithChildren
+  '/projects': typeof ProjectsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/projects/$projectId': typeof ProjectsProjectIdRoute
-  '/projects/': typeof ProjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -89,10 +75,9 @@ export interface FileRoutesByTo {
   '/control-center': typeof ControlCenterRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/projects': typeof ProjectsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/projects/$projectId': typeof ProjectsProjectIdRoute
-  '/projects': typeof ProjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -101,11 +86,9 @@ export interface FileRoutesById {
   '/control-center': typeof ControlCenterRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/projects': typeof ProjectsRouteWithChildren
+  '/projects': typeof ProjectsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/projects/$projectId': typeof ProjectsProjectIdRoute
-  '/projects/': typeof ProjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -118,8 +101,6 @@ export interface FileRouteTypes {
     | '/projects'
     | '/signup'
     | '/sitemap.xml'
-    | '/projects/$projectId'
-    | '/projects/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -127,10 +108,9 @@ export interface FileRouteTypes {
     | '/control-center'
     | '/dashboard'
     | '/login'
+    | '/projects'
     | '/signup'
     | '/sitemap.xml'
-    | '/projects/$projectId'
-    | '/projects'
   id:
     | '__root__'
     | '/'
@@ -141,8 +121,6 @@ export interface FileRouteTypes {
     | '/projects'
     | '/signup'
     | '/sitemap.xml'
-    | '/projects/$projectId'
-    | '/projects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -151,7 +129,7 @@ export interface RootRouteChildren {
   ControlCenterRoute: typeof ControlCenterRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
-  ProjectsRoute: typeof ProjectsRouteWithChildren
+  ProjectsRoute: typeof ProjectsRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
@@ -214,36 +192,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/projects/': {
-      id: '/projects/'
-      path: '/'
-      fullPath: '/projects/'
-      preLoaderRoute: typeof ProjectsIndexRouteImport
-      parentRoute: typeof ProjectsRoute
-    }
-    '/projects/$projectId': {
-      id: '/projects/$projectId'
-      path: '/$projectId'
-      fullPath: '/projects/$projectId'
-      preLoaderRoute: typeof ProjectsProjectIdRouteImport
-      parentRoute: typeof ProjectsRoute
-    }
   }
 }
-
-interface ProjectsRouteChildren {
-  ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
-  ProjectsIndexRoute: typeof ProjectsIndexRoute
-}
-
-const ProjectsRouteChildren: ProjectsRouteChildren = {
-  ProjectsProjectIdRoute: ProjectsProjectIdRoute,
-  ProjectsIndexRoute: ProjectsIndexRoute,
-}
-
-const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
-  ProjectsRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -251,7 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   ControlCenterRoute: ControlCenterRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
-  ProjectsRoute: ProjectsRouteWithChildren,
+  ProjectsRoute: ProjectsRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }

@@ -496,6 +496,174 @@ function ProjectContent() {
           </div>
         </section>
 
+        <section className="border border-hairline p-8">
+          <div className="label-eyebrow mb-6">Threads</div>
+
+          <div className="space-y-3">
+            <input
+              type="text"
+              value={newThread.title}
+              onChange={(e) => setNewThread({ ...newThread, title: e.target.value })}
+              placeholder="Thread title"
+              className="w-full bg-background border border-hairline px-4 py-3 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input
+                type="text"
+                value={newThread.pole_a}
+                onChange={(e) => setNewThread({ ...newThread, pole_a: e.target.value })}
+                placeholder="Pole A"
+                className="w-full bg-background border border-hairline px-4 py-3 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+              <input
+                type="text"
+                value={newThread.pole_b}
+                onChange={(e) => setNewThread({ ...newThread, pole_b: e.target.value })}
+                placeholder="Pole B"
+                className="w-full bg-background border border-hairline px-4 py-3 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+              <input
+                type="text"
+                value={newThread.category}
+                onChange={(e) => setNewThread({ ...newThread, category: e.target.value })}
+                placeholder="Category"
+                className="w-full bg-background border border-hairline px-4 py-3 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+              <input
+                type="text"
+                value={newThread.status}
+                onChange={(e) => setNewThread({ ...newThread, status: e.target.value })}
+                placeholder="Status (e.g. open)"
+                className="w-full bg-background border border-hairline px-4 py-3 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+            </div>
+          </div>
+
+          <div className="mt-4 flex items-center gap-4">
+            <button
+              onClick={handleAddThread}
+              disabled={addingThread || !newThread.title.trim()}
+              className="text-sm border border-foreground px-5 py-2 hover:bg-foreground hover:text-background transition-colors disabled:opacity-40"
+            >
+              {addingThread ? "Adding…" : "Add Thread"}
+            </button>
+          </div>
+
+          {addThreadError && (
+            <div className="mt-4 border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">{addThreadError}</div>
+          )}
+          {threadActionError && (
+            <div className="mt-4 border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">{threadActionError}</div>
+          )}
+          {threadsError && (
+            <div className="mt-4 border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">{threadsError}</div>
+          )}
+
+          <div className="mt-8 space-y-3">
+            {threadsLoading && threads.length === 0 ? (
+              <div className="text-sm text-muted-foreground">Loading threads…</div>
+            ) : threads.length === 0 ? (
+              <div className="text-sm text-muted-foreground">No threads yet.</div>
+            ) : (
+              threads.map((t) => {
+                const isEditing = editingThreadId === t.id;
+                return (
+                  <div key={t.id} className="border border-hairline p-4">
+                    {isEditing ? (
+                      <div className="space-y-3">
+                        <input
+                          type="text"
+                          value={(editThread.title ?? "") as string}
+                          onChange={(e) => setEditThread({ ...editThread, title: e.target.value })}
+                          placeholder="Thread title"
+                          className="w-full bg-background border border-hairline px-3 py-2 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                        />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <input
+                            type="text"
+                            value={(editThread.pole_a ?? "") as string}
+                            onChange={(e) => setEditThread({ ...editThread, pole_a: e.target.value })}
+                            placeholder="Pole A"
+                            className="w-full bg-background border border-hairline px-3 py-2 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                          />
+                          <input
+                            type="text"
+                            value={(editThread.pole_b ?? "") as string}
+                            onChange={(e) => setEditThread({ ...editThread, pole_b: e.target.value })}
+                            placeholder="Pole B"
+                            className="w-full bg-background border border-hairline px-3 py-2 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                          />
+                          <input
+                            type="text"
+                            value={(editThread.category ?? "") as string}
+                            onChange={(e) => setEditThread({ ...editThread, category: e.target.value })}
+                            placeholder="Category"
+                            className="w-full bg-background border border-hairline px-3 py-2 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                          />
+                          <input
+                            type="text"
+                            value={(editThread.status ?? "") as string}
+                            onChange={(e) => setEditThread({ ...editThread, status: e.target.value })}
+                            placeholder="Status"
+                            className="w-full bg-background border border-hairline px-3 py-2 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                          />
+                        </div>
+                        <div className="flex items-center gap-3 pt-1">
+                          <button
+                            onClick={() => handleSaveThread(t.id)}
+                            disabled={savingThread}
+                            className="text-xs border border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors disabled:opacity-40"
+                          >
+                            {savingThread ? "Saving…" : "Save"}
+                          </button>
+                          <button
+                            onClick={() => { setEditingThreadId(null); setEditThread({}); }}
+                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-foreground font-medium break-words">{t.title}</p>
+                          {(t.pole_a || t.pole_b) && (
+                            <p className="mono text-xs text-muted-foreground mt-2">
+                              {t.pole_a ?? "—"} ↔ {t.pole_b ?? "—"}
+                            </p>
+                          )}
+                          <div className="mono text-xs text-muted-foreground mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                            {t.category && <span>category: {t.category}</span>}
+                            <span>status: {t.status}</span>
+                            <span>{new Date(t.created_at).toLocaleString()}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                          <button
+                            onClick={() => startEditThread(t)}
+                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteThread(t.id)}
+                            className="text-xs text-muted-foreground hover:text-destructive transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </section>
+
+
+
         <section>
           <div className="label-eyebrow mb-4">Metadata</div>
           <dl className="divide-y divide-hairline border border-hairline">

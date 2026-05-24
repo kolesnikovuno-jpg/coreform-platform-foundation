@@ -169,6 +169,9 @@ function ProjectContent() {
             {dirty && (
               <span className="text-xs text-muted-foreground">Unsaved changes</span>
             )}
+            {saveSuccess && !dirty && (
+              <span className="text-xs text-foreground">Saved</span>
+            )}
           </div>
 
           {saveError && (

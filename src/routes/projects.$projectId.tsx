@@ -19,6 +19,15 @@ type Project = {
   updated_at: string;
 };
 
+type Signal = {
+  id: string;
+  project_id: string;
+  user_id: string;
+  signal_type: string;
+  content: string;
+  created_at: string;
+};
+
 function ProjectPage() {
   return (
     <RequireAuth>

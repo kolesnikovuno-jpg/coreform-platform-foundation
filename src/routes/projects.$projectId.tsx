@@ -50,16 +50,19 @@ function ProjectContent() {
     setError(null);
     const { data, error } = await supabase
       .from("projects")
-      .select("id, user_id, title, created_at, updated_at")
+      .select("id, user_id, title, central_request, created_at, updated_at")
       .eq("id", projectId)
       .maybeSingle();
     if (error) {
       setError(error.message);
       setProject(null);
     } else if (data) {
-      setProject(data);
-      setTitle(data.title);
+      const p = data as Project;
+      setProject(p);
+      setTitle(p.title);
+      setCentralRequest(p.central_request ?? "");
       setDirty(false);
+      setRequestDirty(false);
     } else {
       setProject(null);
     }
@@ -94,6 +97,32 @@ function ProjectContent() {
     setTitle(value);
     setSaveSuccess(false);
     setDirty(value.trim() !== (project?.title ?? "").trim());
+  };
+
+  const handleSaveRequest = async () => {
+    if (!project || !user) return;
+    setSaving(true);
+    setRequestSaveError(null);
+    setRequestSaveSuccess(false);
+    const { error } = await supabase
+      .from("projects")
+      .update({ central_request: centralRequest.trim(), updated_at: new Date().toISOString() })
+      .eq("id", projectId)
+      .eq("user_id", user.id);
+    setSaving(false);
+    if (error) {
+      setRequestSaveError(error.message);
+      return;
+    }
+    setRequestDirty(false);
+    setRequestSaveSuccess(true);
+    await loadProject();
+  };
+
+  const handleRequestChange = (value: string) => {
+    setCentralRequest(value);
+    setRequestSaveSuccess(false);
+    setRequestDirty(value.trim() !== (project?.central_request ?? "").trim());
   };
 
   if (loading) {

@@ -75,6 +75,107 @@ function ProjectContent() {
   const [addSignalError, setAddSignalError] = useState<string | null>(null);
   const [deleteSignalError, setDeleteSignalError] = useState<string | null>(null);
 
+  const [threads, setThreads] = useState<Thread[]>([]);
+  const [threadsLoading, setThreadsLoading] = useState(false);
+  const [threadsError, setThreadsError] = useState<string | null>(null);
+  const [newThread, setNewThread] = useState({
+    title: "",
+    pole_a: "",
+    pole_b: "",
+    category: "",
+    status: "open",
+  });
+  const [addingThread, setAddingThread] = useState(false);
+  const [addThreadError, setAddThreadError] = useState<string | null>(null);
+  const [threadActionError, setThreadActionError] = useState<string | null>(null);
+  const [editingThreadId, setEditingThreadId] = useState<string | null>(null);
+  const [editThread, setEditThread] = useState<Partial<Thread>>({});
+  const [savingThread, setSavingThread] = useState(false);
+
+  const loadThreads = useCallback(async () => {
+    setThreadsLoading(true);
+    setThreadsError(null);
+    const { data, error } = await supabase
+      .from("threads")
+      .select("*")
+      .eq("project_id", projectId)
+      .order("created_at", { ascending: false });
+    if (error) {
+      setThreadsError(error.message);
+      setThreads([]);
+    } else {
+      setThreads((data ?? []) as Thread[]);
+    }
+    setThreadsLoading(false);
+  }, [projectId]);
+
+  useEffect(() => { loadThreads(); }, [loadThreads]);
+
+  const handleAddThread = async () => {
+    if (!user) return;
+    const title = newThread.title.trim();
+    if (!title) return;
+    setAddingThread(true);
+    setAddThreadError(null);
+    const { error } = await supabase.from("threads").insert({
+      project_id: projectId,
+      user_id: user.id,
+      title,
+      pole_a: newThread.pole_a.trim() || null,
+      pole_b: newThread.pole_b.trim() || null,
+      category: newThread.category.trim() || null,
+      status: newThread.status.trim() || "open",
+    });
+    setAddingThread(false);
+    if (error) { setAddThreadError(error.message); return; }
+    setNewThread({ title: "", pole_a: "", pole_b: "", category: "", status: "open" });
+    await loadThreads();
+  };
+
+  const handleDeleteThread = async (id: string) => {
+    setThreadActionError(null);
+    const { error } = await supabase.from("threads").delete().eq("id", id);
+    if (error) { setThreadActionError(error.message); return; }
+    await loadThreads();
+  };
+
+  const startEditThread = (t: Thread) => {
+    setEditingThreadId(t.id);
+    setEditThread({
+      title: t.title,
+      pole_a: t.pole_a ?? "",
+      pole_b: t.pole_b ?? "",
+      category: t.category ?? "",
+      status: t.status,
+    });
+    setThreadActionError(null);
+  };
+
+  const handleSaveThread = async (id: string) => {
+    if (!user) return;
+    const title = (editThread.title ?? "").toString().trim();
+    if (!title) { setThreadActionError("Title is required"); return; }
+    setSavingThread(true);
+    setThreadActionError(null);
+    const { error } = await supabase
+      .from("threads")
+      .update({
+        title,
+        pole_a: (editThread.pole_a ?? "").toString().trim() || null,
+        pole_b: (editThread.pole_b ?? "").toString().trim() || null,
+        category: (editThread.category ?? "").toString().trim() || null,
+        status: (editThread.status ?? "open").toString().trim() || "open",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .eq("user_id", user.id);
+    setSavingThread(false);
+    if (error) { setThreadActionError(error.message); return; }
+    setEditingThreadId(null);
+    setEditThread({});
+    await loadThreads();
+  };
+
   const loadSignals = useCallback(async () => {
     setSignalsLoading(true);
     setSignalsError(null);

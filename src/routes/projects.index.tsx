@@ -34,10 +34,12 @@ function ProjectsContent() {
   const [error, setError] = useState<string | null>(null);
 
   const loadProjects = useCallback(async () => {
+    if (!user) return;
     setLoading(true);
     const { data, error } = await supabase
       .from("projects")
-      .select("id, title, created_at")
+      .select("*")
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     if (error) {
       setError(error.message);
@@ -45,7 +47,7 @@ function ProjectsContent() {
       setProjects(data ?? []);
     }
     setLoading(false);
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (user) loadProjects();
